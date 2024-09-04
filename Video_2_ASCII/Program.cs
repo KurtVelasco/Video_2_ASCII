@@ -14,11 +14,11 @@ namespace Video_2_ASCII
         public static bool ALLOW_EXPORT = false;
         public static bool GO_PLAY_IMMED = false;
         public static int CURRENT_FRAMERATE = 30;
-        public static string CURRENT_EXTENSION = ".ask";
+        public static string CURRENT_EXTENSION = ".asc";
         public static string CURRENT_MUSIC = "bad.webm";
         public static string DEFAULT_ASCII_SHADINGS = " #S%?*+;:,. ";
         public static bool AUDIO_ONLY = true;
-
+        public static int[] ASCII_RES = {200,70};
         static void Main(string[] args)
         {
             Menu();
@@ -31,11 +31,12 @@ namespace Video_2_ASCII
                 Console.Clear();
                 Console.WriteLine("******************************************\n\n" +
                                   "ASCII Simulator\n\n" +
-                                  $"Framerate: {CURRENT_FRAMERATE}\n" +
+                                  $"Frame Delay (ms): {CURRENT_FRAMERATE}\n" +
                                   $"Extension: {CURRENT_EXTENSION}\n" +
                                   $"Music Path: {CURRENT_MUSIC}\n" +
                                   $"ASCII Shadings: {DEFAULT_ASCII_SHADINGS}\n" +
                                   $"Has Audio: {AUDIO_ONLY}\n" +
+                                  $"ASCII Resolution (Row/Column): {ASCII_RES[0]} {ASCII_RES[1]}\n" +
                                   "\n******************************************");
                 Console.WriteLine("1. Convert Video to ASCII\n" +
                                   "2. Play .ask File\n" +
@@ -66,18 +67,19 @@ namespace Video_2_ASCII
             Console.Write("Input videoPath: ");
             string videoPath = Console.ReadLine();
 
-            Console.Write("Do you want to Export ASCII animation (default to 'N') Y/N: ");
+            Console.Write("\nDo you want to Export ASCII animation (default to 'N') Y/N: ");
             ALLOW_EXPORT = Console.ReadLine().ToLower() == "y";
 
-            Console.Write("Do you want to play ASCII after conversion? (default to 'N') Y/N: ");
+            Console.Write("\nDo you want to play ASCII after conversion? (default to 'N') Y/N: ");
             GO_PLAY_IMMED = Console.ReadLine().ToLower() == "y";
 
-            Conversion asciiConversion = new Conversion(videoPath);
+            Conversion asciiConversion = new Conversion(videoPath, DEFAULT_ASCII_SHADINGS, ASCII_RES);
             ASCII_FRAME = asciiConversion.ConvertVidtoAscii();
 
             if (ALLOW_EXPORT)
             {
-                WriteASCII();
+                Console.Write("\nWrite the output filename (Don't include extension): ");
+                WriteASCII(Console.ReadLine());
             }
 
             if (GO_PLAY_IMMED)
@@ -93,11 +95,12 @@ namespace Video_2_ASCII
                 Console.Clear();
                 Console.WriteLine(
                                  "ASCII Simulator\n\n" +
-                                 $"Framerate: {CURRENT_FRAMERATE}\n" +
+                                 $"Delay Playback (ms): {CURRENT_FRAMERATE}\n" +
                                  $"Extension: {CURRENT_EXTENSION}\n" +
                                  $"Music Path: {CURRENT_MUSIC}\n" +
                                  $"ASCII Shadings: {DEFAULT_ASCII_SHADINGS}\n" +
-                                 $"Has Audio: {AUDIO_ONLY}\n"
+                                 $"Has Audio: {AUDIO_ONLY}\n" +
+                                 $"ASCII Row/Column {ASCII_RES[0]} {ASCII_RES[1]}"
                                  );
 
                 Console.WriteLine("******************************************\n\n" +
@@ -106,7 +109,9 @@ namespace Video_2_ASCII
                 Console.WriteLine("1. Change ASCII Playback Framerate\n"
                 + "2. Change Audio file (MP3)\n"
                 + "3. Toggle Audio in player\n"
-                + "4. Return");
+                + "4. Change ASCII Shadings\n"
+                 + "5. Change ASCII Resolution\n"
+                 + "6. Return\n");
                 string choice = Console.ReadLine();
 
 
@@ -135,6 +140,27 @@ namespace Video_2_ASCII
                         DEFAULT_ASCII_SHADINGS = Console.ReadLine();
                         return;
                     case "5":
+                        Console.WriteLine("Do note that higher settings will impact conversion speed\n");
+                        Console.Write("New ASCII Row Lenght: ");
+                        if (int.TryParse(Console.ReadLine(), out int row))
+                        {
+                            ASCII_RES[0] = row;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Please enter a valid number.");
+                        }
+                        Console.Write("New ASCII Column Lenght: ");
+                        if (int.TryParse(Console.ReadLine(), out int column))
+                        {
+                            ASCII_RES[1] = column;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Please enter a valid number.");
+                        }
+                        return;
+                    case "6":
                         return; 
                     default:
                         Console.WriteLine("Invalid choice. Please try again.");
@@ -143,11 +169,11 @@ namespace Video_2_ASCII
             }
         }
 
-        public static void WriteASCII()
+        public static void WriteASCII(string fileName)
         {
             try
             {
-                using (FileStream stream = new FileStream("bad.ask", FileMode.Create, FileAccess.Write))
+                using (FileStream stream = new FileStream(fileName + ".asc", FileMode.Create, FileAccess.Write))
                 {
                     BinaryFormatter formatter = new BinaryFormatter();
                     formatter.Serialize(stream, ASCII_FRAME);

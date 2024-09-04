@@ -15,10 +15,13 @@ namespace Video_2_ASCII
         //The Ascii Characters are ordered from Light to Dark
         //You can assign custom char for differing degrees of shade
         //// 
-        private static string DEFAULT_ASCII_SHADINGS = " #S%?*+;:,. ";
+        private static string DEFAULT_ASCII_SHADINGS = "@#S%?*+;:,. ";
+        private static int[] ASCII_RES = { 200, 70 };
 
-        public Conversion(string videoPath)
+        public Conversion(string videoPath,string ascii, int[] resolution)
         {
+            DEFAULT_ASCII_SHADINGS =ascii;
+            ASCII_RES = resolution; 
             VIDEO_PATH = videoPath;
             VideoFileReader videoReader = new VideoFileReader();
             try
@@ -50,8 +53,8 @@ namespace Video_2_ASCII
             List<string> asciiFrames = new List<string>();
 
             int frameCount = (int)videoReader.FrameCount;
-            int width = 200;
-            int height = 70;
+            int width = ASCII_RES[0];
+            int height = ASCII_RES[1];
             int count = 0;
 
 
