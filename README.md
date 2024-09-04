@@ -5,6 +5,8 @@ Lets you convert MP4 files into ASCII animation and be able to play and export t
 
 This application is allows you configure how ASCII animation are set-up and I tried to make it as configurable as possible either through the terminal or through code-base
 
+Youtube Demonstration: https://www.youtube.com/watch?v=i5QJRj03iXw
+
 ![image](https://github.com/user-attachments/assets/f53ad563-f341-463b-87db-fbe4e4d4f6d7)
 
 
