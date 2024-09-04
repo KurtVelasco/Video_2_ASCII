@@ -10,6 +10,8 @@ This application is allows you configure how ASCII animation are set-up and I tr
 
 ## Things to Know before using
 
+This is old project that I tried to make a year go and only now im able to atleast make it funcitonal
+
 I haven't gone much testing after making this program, and it's still bare-bones atm (some crashes and features)
 
 In this scenario I only tested MP4 files for the actual video converition and WEBM for music files
